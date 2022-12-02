@@ -43,7 +43,7 @@ void setup()
 
     // Begin I2C comunication and set timeout
     Wire.begin();
-    Wire.setWireTimeout(1E5);
+    //Wire.setWireTimeout(1E5);
 
     // Initialize LCD and turn the backlight on
     gui.displayBegin();
