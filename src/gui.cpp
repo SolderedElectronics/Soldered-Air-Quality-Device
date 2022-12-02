@@ -6,13 +6,13 @@
  * @param *_lcd     Pointer to the LCD object used for display sensor values.
  *
  * @param *_bme280  Pointer to the BME280 sensor used for measure temperature, humidity and pressure.
- * 
+ *
  * @param *_ccs811Sensor Pointer to the CCS811 sensor used for measure Co2 and TVOC.
- * 
+ *
  * @param *_pms     Pointer to the PMS7003 sensor used for measuring particle concentration in the air.
- * 
+ *
  * @param *_page    Pointer to current page
- * 
+ *
  * @param *_maxPage Pointer to the variable of the max number of pages
  */
 GUI::GUI(LCD *_lcd, BME280 *_bme280, CCS_811 *_ccs811Sensor, PMS7003 *_pms, int *_page, int *_maxPage)
@@ -219,8 +219,10 @@ void GUI::insertNumbers(byte page)
         {
             ccs811Sensor->readAlgorithmResults(); // Read Alorithm only reads data into internal registers of sensor,
                                                   // doesnt return anything
-            printCCSvalues(ccs811Sensor->getCO2(),
-                           ccs811Sensor->getTVOC()); // Printing it to the LCD on the right place
+            CO2 = ccs811Sensor->getCO2();
+            TVOC = ccs811Sensor->getTVOC();
+            
+            printCCSvalues(CO2, TVOC); // Printing it to the LCD on the right place
         }
         else
         {
@@ -324,12 +326,12 @@ void GUI::printCCSvalues(int ccsCO2, int ccsTVOC)
 {
     if (ccsCO2 == -1)
     {
-        // If there is any error, print Err instead of values
+        // If there is any error, print old values
         lcd->setCursor(10, 0);
-        lcd->print("Err");
+        lcd->print(CO2);
 
         lcd->setCursor(10, 1);
-        lcd->print("Err");
+        lcd->print(TVOC);
     }
     else
     {
@@ -423,7 +425,7 @@ void GUI::printPMSvalues(byte page, int pm1, int pm25, int pm10, int n0p3, int n
  */
 void GUI::insertPageNum()
 {
-    lcd->setCursor(7, 3);
+    lcd->setCursor(6, 3);
     lcd->print(*page + 1);
 }
 
@@ -434,7 +436,7 @@ void GUI::insertPageNum()
  */
 void GUI::pageMark()
 {
-    lcd->setCursor(1, 3);
+    lcd->setCursor(0, 3);
     lcd->print("Page:  /");
     lcd->print(*maxPage);
 }
@@ -484,8 +486,8 @@ void GUI::CCSbegin()
             // Read CCS
             ccs811Sensor->readAlgorithmResults();  // Read Alorithm only reads data into internal registers of sensor,
                                                    // doesnt return anything
-            int ccsCO2 = ccs811Sensor->getCO2();   // Returns calculated CO2 reading
-            int ccsTVOC = ccs811Sensor->getTVOC(); // Returns calculated TVOC reading
+            CO2 = ccs811Sensor->getCO2();   // Returns calculated CO2 reading
+            TVOC = ccs811Sensor->getTVOC(); // Returns calculated TVOC reading
         }
     }
 }
@@ -522,12 +524,12 @@ byte GUI::BMEavailable()
 void GUI::printBatteryPercentage()
 {
     // Measure and calculate battery level
-    int batteryVoltage = analogRead(BATTERY_MEASURE_PIN);
-    byte batteryPercentage = map(batteryVoltage, BATTERY_LOW, BATTERY_FULL, 0, 100);
+    // Analog reference is set to 1.1V because it's fix and we will get proper readings
+    // Battery Voltage [V] = ADC reading * Vref/1023 * (1 + (R1/R2))
+    float batteryVoltage = analogRead(BATTERY_MEASURE_PIN) * 1.1 / 1023 * (1 + (BATTERY_R1 / BATTERY_R2));
 
     // Print baterry level
-    lcd->setCursor(11, 3);
-    lcd->print("Bat: ");
-    lcd->print(batteryPercentage);
-    lcd->print("%");
+    lcd->setCursor(15, 3);
+    lcd->print(batteryVoltage, 2);
+    lcd->print("V");
 }
