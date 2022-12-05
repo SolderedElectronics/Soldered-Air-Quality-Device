@@ -2,23 +2,26 @@
     The air quality sensor is a device that measures particulate concentration in the air and determines air quality.
     It also measures temperature, humidity and pressure.
 
-    air-quality.h is a header file that contains parameters for device configuration and GUI class. You can configure
-    which sensors want to use by simply put 0 to the certain define. BME680 is used by default and you can't disable
+    settings.h is a file that contains parameters for device configuration. You can configure
+    which sensors want to use by simply put 0 to the certain define. BME280 is used by default and you can't disable
     them while CCS811 and PMS7003 are optional. You can also adjust refresh time, battery high and low levels values,
-    and temperature offset to calibrate the BME280 sensor.
+    temperature offset to calibrate the BME280 sensor, rotary encoder pins, and PMS7003 pins.
+
+    gui.h is a header file that contains class GUI class definition.
 
     gui.cpp contains all functions from the GUI class which is used to display measurements on the screen and initialize
     sensors.
 
-    1 December 2022 by Soldered
+    5 December 2022 by Soldered
 */
 
-#include "src/air-quality.h"
+#include "src/gui.h"      // Include GUI class definition and its methods
+#include "src/settings.h" // Include users settings
 
 int page = 0, prevPage;            // Use those variables to select a page
 int currentStateClock;             // Store the status of the rotary encoder clock pin (HIGH or LOW)
 int lastStateClock;                // Store the PREVIOUS status of the rotary encoder clock pin (HIGH or LOW)
-unsigned long lastButtonPress = 0; // Use this to store if the rotaryEncoderBtn button was pressed or not
+unsigned long lastButtonPress = 0; // Use this to store if the ROTARY_BUTTON_PIN button was pressed or not
 
 int maxPage = 1;  // Max number of pages, 2 for the BME that it's always in use, later is added more if needed
 int pageOrder[5]; // The array which decides the order of pages we display
@@ -34,27 +37,29 @@ GUI gui(&lcd, &bme280, &ccs811Sensor, &pms, &page, &maxPage);
 
 void setup()
 {
-    // Set analog reference to 1.1V to measure battery voltage
-    analogReference(INTERNAL);
+    // Set analog reference to 1.1V to measure battery voltage if you use this option
+    if (MEASURING_BATTERY_VOLTAGE)
+    {
+        analogReference(INTERNAL);
+    }
 
     // Turn the onboard LED off because we don't use it
-    pinMode(ONBOARD_LED, OUTPUT);
-    digitalWrite(ONBOARD_LED, LOW);
+    pinMode(LEDWS_BUILTIN, OUTPUT);
+    digitalWrite(LEDWS_BUILTIN, LOW);
 
     // Begin I2C comunication and set timeout
     Wire.begin();
-    //Wire.setWireTimeout(1E5);
 
     // Initialize LCD and turn the backlight on
     gui.displayBegin();
 
     // Set encoder and button pins as inputs with pullups
-    pinMode(clock, INPUT_PULLUP);
-    pinMode(data, INPUT_PULLUP);
-    pinMode(rotaryEncoderBtn, INPUT_PULLUP);
+    pinMode(ROTARY_CLOCK_PIN, INPUT_PULLUP);
+    pinMode(ROTARY_DATA_PIN, INPUT_PULLUP);
+    pinMode(ROTARY_BUTTON_PIN, INPUT_PULLUP);
 
     // Read the initial state of clock pin of rotary encoder (it could be HIGH or LOW)
-    lastStateClock = digitalRead(clock);
+    lastStateClock = digitalRead(ROTARY_CLOCK_PIN);
 
     // Initialize BME
     gui.BMEbegin();
@@ -120,7 +125,7 @@ void loop()
 {
 
     // Read the current state of the rotary encoder CLK pin
-    currentStateClock = digitalRead(clock);
+    currentStateClock = digitalRead(ROTARY_CLOCK_PIN);
 
     // If last and current state of the rotary encoder Clock are different, then "pulse occurred"
     // React to only 1 state change to avoid double count
@@ -128,7 +133,7 @@ void loop()
     {
         // If the data state is different than the Clock state then
         // the encoder is rotating "CCW" so we decrement
-        if (digitalRead(data) != currentStateClock)
+        if (digitalRead(ROTARY_DATA_PIN) != currentStateClock)
         {
             page--;
 
@@ -155,7 +160,7 @@ void loop()
     lastStateClock = currentStateClock;
 
     // Read the button state
-    int btnState = digitalRead(rotaryEncoderBtn);
+    int btnState = digitalRead(ROTARY_BUTTON_PIN);
 
     // If we detect LOW signal, button is pressed
     if (btnState == LOW)

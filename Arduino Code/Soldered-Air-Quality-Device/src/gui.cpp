@@ -1,4 +1,18 @@
-#include "air-quality.h"
+/**
+ ***************************************************
+ *
+ * @file        gui.cpp
+ * 
+ * @brief       Functions for measuring and displaying the readings on the LCD
+ * 
+ * @copyright   GNU General Public License v3.0
+ * 
+ * @author      Karlo Leksic for Soldered.com
+ * 
+****************************************************/
+
+#include "gui.h"
+#include "settings.h"
 
 /**
  * @brief           Constructor of the GUI class.
@@ -58,8 +72,11 @@ void GUI::setPage(byte page)
         break;
     }
 
-    insertPageNum();          // Print page number
-    printBatteryPercentage(); // Print battery percentage
+    insertPageNum(); // Print page number
+    if (MEASURING_BATTERY_VOLTAGE)
+    {
+        printBatteryPercentage(); // Print battery percentage
+    }
 }
 
 /**
@@ -221,7 +238,7 @@ void GUI::insertNumbers(byte page)
                                                   // doesnt return anything
             CO2 = ccs811Sensor->getCO2();
             TVOC = ccs811Sensor->getTVOC();
-            
+
             printCCSvalues(CO2, TVOC); // Printing it to the LCD on the right place
         }
         else
@@ -425,8 +442,16 @@ void GUI::printPMSvalues(byte page, int pm1, int pm25, int pm10, int n0p3, int n
  */
 void GUI::insertPageNum()
 {
-    lcd->setCursor(6, 3);
-    lcd->print(*page + 1);
+    if (MEASURING_BATTERY_VOLTAGE)
+    {
+        lcd->setCursor(6, 3);
+        lcd->print(*page + 1);
+    }
+    else
+    {
+        lcd->setCursor(11, 3);
+        lcd->print(*page + 1);
+    }
 }
 
 /**
@@ -436,9 +461,18 @@ void GUI::insertPageNum()
  */
 void GUI::pageMark()
 {
-    lcd->setCursor(0, 3);
-    lcd->print("Page:  /");
-    lcd->print(*maxPage);
+    if (MEASURING_BATTERY_VOLTAGE)
+    {
+        lcd->setCursor(0, 3);
+        lcd->print("Page:  /");
+        lcd->print(*maxPage);
+    }
+    else
+    {
+        lcd->setCursor(5, 3);
+        lcd->print("Page:  /");
+        lcd->print(*maxPage);
+    }
 }
 
 /**
@@ -484,10 +518,10 @@ void GUI::CCSbegin()
         if (ccs811Sensor->dataAvailable())
         {
             // Read CCS
-            ccs811Sensor->readAlgorithmResults();  // Read Alorithm only reads data into internal registers of sensor,
-                                                   // doesnt return anything
-            CO2 = ccs811Sensor->getCO2();   // Returns calculated CO2 reading
-            TVOC = ccs811Sensor->getTVOC(); // Returns calculated TVOC reading
+            ccs811Sensor->readAlgorithmResults(); // Read Alorithm only reads data into internal registers of sensor,
+                                                  // doesnt return anything
+            CO2 = ccs811Sensor->getCO2();         // Returns calculated CO2 reading
+            TVOC = ccs811Sensor->getTVOC();       // Returns calculated TVOC reading
         }
     }
 }
