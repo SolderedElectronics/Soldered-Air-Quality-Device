@@ -2,14 +2,14 @@
  ***************************************************
  *
  * @file        gui.cpp
- * 
+ *
  * @brief       Functions for measuring and displaying the readings on the LCD
- * 
+ *
  * @copyright   GNU General Public License v3.0
- * 
+ *
  * @author      Karlo Leksic for Soldered.com
- * 
-****************************************************/
+ *
+ ****************************************************/
 
 #include "gui.h"
 #include "settings.h"
@@ -19,7 +19,7 @@
  *
  * @param *_lcd     Pointer to the LCD object used for display sensor values.
  *
- * @param *_bme280  Pointer to the BME280 sensor used for measure temperature, humidity and pressure.
+ * @param *_bme680  Pointer to the BME680 sensor used for measure temperature, humidity and pressure.
  *
  * @param *_ccs811Sensor Pointer to the CCS811 sensor used for measure Co2 and TVOC.
  *
@@ -29,10 +29,10 @@
  *
  * @param *_maxPage Pointer to the variable of the max number of pages
  */
-GUI::GUI(LCD *_lcd, BME280 *_bme280, CCS_811 *_ccs811Sensor, PMS7003 *_pms, int *_page, int *_maxPage)
+GUI::GUI(LCD *_lcd, Adafruit_BME680 *_bme680, CCS_811 *_ccs811Sensor, PMS7003 *_pms, int *_page, int *_maxPage)
 {
     lcd = _lcd;
-    bme280 = _bme280;
+    bme680 = _bme680;
     ccs811Sensor = _ccs811Sensor;
     pms = _pms;
     page = _page;
@@ -227,8 +227,7 @@ void GUI::insertNumbers(byte page)
     switch (page)
     {
     case 1:
-        bme280->readSensorData(bmeTemp, bmeHumidity, bmePressure);       // readBME
-        printBMEvalues(bmeTemp - TEMP_OFFEST, bmeHumidity, bmePressure); // Printing it to the LCD on the right place
+                    printBMEvalues(); // Printing it to the LCD on the right place
         break;
 
     case 2:
@@ -302,23 +301,23 @@ void GUI::insertNumbers(byte page)
  *
  * @return          None.
  */
-void GUI::printBMEvalues(float temp, float hum, float pressure)
+void GUI::printBMEvalues()
 {
-    if (!BMEavailable())
+    if(bme680->performReading())
     {
-        // If the sensor is available, print read values and round them to 1 decimal
+        // If the sensor read proprely, print read values and round them to 1 decimal
         lcd->setCursor(13, 0);
-        lcd->print(temp, 1);
+        lcd->print(bme680->temperature, 1);
 
         lcd->setCursor(13, 1);
-        lcd->print(hum, 1);
+        lcd->print(bme680->humidity, 1);
 
         lcd->setCursor(9, 2);
-        lcd->print(pressure, 1);
+        lcd->print(bme680->pressure / 100.0, 1);
     }
     else
     {
-        // If the sensor isn't available, print Err instead numbers
+        // If failed to perform reading, print Err instead numbers
         lcd->setCursor(13, 0);
         lcd->print("Err");
 
@@ -500,10 +499,8 @@ void GUI::displayBegin()
  */
 void GUI::BMEbegin()
 {
-    float bmeTemp, bmeHumidity, bmePressure;
-
-    bme280->begin();
-    bme280->readSensorData(bmeTemp, bmeHumidity, bmePressure);
+    bme680->begin(0x76, 1);
+    bme680->performReading();
 }
 
 /**
@@ -535,19 +532,6 @@ void GUI::PMSbegin()
 {
     pms->begin();
     pms->read();
-}
-
-/**
- * @brief           Check if the BME responses on the I2C, if so, it is probably available
- *
- * @return          Wire.endTransmission code. 0 means successfully.
- */
-byte GUI::BMEavailable()
-{
-    Wire.beginTransmission(0x76);
-
-    byte err = Wire.endTransmission();
-    return err;
 }
 
 /**

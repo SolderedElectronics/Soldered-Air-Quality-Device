@@ -16,7 +16,7 @@ In order for all the sensors and electronics to be in one place and at the same 
 
 When we place all the sensors in the intended place in the case, it looks like this
 
-![Device inside](https://user-images.githubusercontent.com/80395378/205492665-125df0e5-36e8-4671-bf41-df4c05d2ad91.jpg)
+![Device inside with bme680](https://user-images.githubusercontent.com/80395378/206113455-f1681e16-3fd0-4634-a585-58af407c7d01.jpg)
 
 # How to use this device?
 The device has a rotary encoder that controls the device. By turning the rotary encoder, we change the pages on which the readings are displayed. The device automatically refreshes the data every 5 seconds (it can be changed in the code by simply changing the constant), but if we want immediate reading and refreshing of the page, it is possible by pressing the button of the rotary encoder. BME680 and PMS7003 are relatively fast and with them a new reading will be obtained, while CCS811 is not so fast and if we refresh its measurements too quickly sometimes it will not be able to measure them and old measurements will be displayed. These times are of the order of several tenths, and this will not be noticed if the device refreshes itself. Depending on how many sensors are connected, we have a different number of pages, and the pages go in a circle, i.e. from the last page by turning forward, we switch to the first page and vice versa.

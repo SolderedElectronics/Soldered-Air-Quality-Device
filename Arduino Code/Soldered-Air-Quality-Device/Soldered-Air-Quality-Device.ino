@@ -3,9 +3,9 @@
     It also measures temperature, humidity and pressure.
 
     settings.h is a file that contains parameters for device configuration. You can configure
-    which sensors want to use by simply put 0 to the certain define. BME280 is used by default and you can't disable
+    which sensors want to use by simply put 0 to the certain define. BME680 is used by default and you can't disable
     them while CCS811 and PMS7003 are optional. You can also adjust refresh time, battery high and low levels values,
-    temperature offset to calibrate the BME280 sensor, rotary encoder pins, and PMS7003 pins.
+    temperature offset to calibrate the BME680 sensor, rotary encoder pins, and PMS7003 pins.
 
     gui.h is a header file that contains class GUI class definition.
 
@@ -28,12 +28,12 @@ int pageOrder[5]; // The array which decides the order of pages we display
 
 unsigned long time1; // Time measurement for button click
 
-BME280 bme280;               // Define BME sensor object
+Adafruit_BME680 bme680;      // Define BME sensor object
 CCS_811 ccs811Sensor;        // Define CCS811 sensor object
 LCD lcd(20, 4);              // Define LCD object
 PMS7003 pms(PMS_RX, PMS_TX); // Define PMSx003, RX, TX
 
-GUI gui(&lcd, &bme280, &ccs811Sensor, &pms, &page, &maxPage);
+GUI gui(&lcd, &bme680, &ccs811Sensor, &pms, &page, &maxPage);
 
 void setup()
 {
