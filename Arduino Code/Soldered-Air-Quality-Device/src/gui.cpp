@@ -29,7 +29,7 @@
  *
  * @param *_maxPage Pointer to the variable of the max number of pages
  */
-GUI::GUI(LCD *_lcd, Adafruit_BME680 *_bme680, CCS_811 *_ccs811Sensor, PMS7003 *_pms, int *_page, int *_maxPage)
+GUI::GUI(LCD *_lcd, BME680 *_bme680, CCS_811 *_ccs811Sensor, PMS7003 *_pms, int *_page, int *_maxPage)
 {
     lcd = _lcd;
     bme680 = _bme680;
@@ -227,7 +227,8 @@ void GUI::insertNumbers(byte page)
     switch (page)
     {
     case 1:
-                    printBMEvalues(); // Printing it to the LCD on the right place
+        bme680->readSensorData(bmeTemp, bmeHumidity, bmePressure, bmeGas); // readBME
+        printBMEvalues(bmeTemp - TEMP_OFFEST, bmeHumidity, bmePressure);   // Printing it to the LCD on the right place
         break;
 
     case 2:
@@ -301,19 +302,19 @@ void GUI::insertNumbers(byte page)
  *
  * @return          None.
  */
-void GUI::printBMEvalues()
+void GUI::printBMEvalues(float temp, float hum, float pressure)
 {
-    if(bme680->performReading())
+    if (!BMEavailable())
     {
         // If the sensor read proprely, print read values and round them to 1 decimal
         lcd->setCursor(13, 0);
-        lcd->print(bme680->temperature, 1);
+        lcd->print(temp, 1);
 
         lcd->setCursor(13, 1);
-        lcd->print(bme680->humidity, 1);
+        lcd->print(hum, 1);
 
         lcd->setCursor(9, 2);
-        lcd->print(bme680->pressure / 100.0, 1);
+        lcd->print(pressure, 1);
     }
     else
     {
@@ -499,8 +500,8 @@ void GUI::displayBegin()
  */
 void GUI::BMEbegin()
 {
-    bme680->begin(0x76, 1);
-    bme680->performReading();
+    bme680->begin();
+    bme680->readSensorData(bmeTemp, bmeHumidity, bmePressure, bmeGas);
 }
 
 /**
@@ -532,6 +533,19 @@ void GUI::PMSbegin()
 {
     pms->begin();
     pms->read();
+}
+
+/**
+ * @brief           Check if the BME responses on the I2C, if so, it is probably available
+ *
+ * @return          Wire.endTransmission code. 0 means successfully.
+ */
+byte GUI::BMEavailable()
+{
+    Wire.beginTransmission(0x76);
+
+    byte err = Wire.endTransmission();
+    return err;
 }
 
 /**

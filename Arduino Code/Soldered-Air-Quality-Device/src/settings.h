@@ -29,7 +29,7 @@
 // The pin on the Dasduino which is connected voltage divider for measuring battery voltage
 #define BATTERY_MEASURE_PIN A0
 
-#define REFRESH_DATA_TIME 5000 // Refresh sensors readings every 5000 ms
+#define REFRESH_DATA_TIME 10000 // Refresh sensors readings every 5000 ms
 
 // Rotary Encoder Inputs
 #define ROTARY_CLOCK_PIN  7  // Clock pin connected to D7

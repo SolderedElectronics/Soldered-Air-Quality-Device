@@ -22,13 +22,14 @@ int page = 0, prevPage;            // Use those variables to select a page
 int currentStateClock;             // Store the status of the rotary encoder clock pin (HIGH or LOW)
 int lastStateClock;                // Store the PREVIOUS status of the rotary encoder clock pin (HIGH or LOW)
 unsigned long lastButtonPress = 0; // Use this to store if the ROTARY_BUTTON_PIN button was pressed or not
+unsigned long lastRefresh = 0;     // Use this to store last screen refresh
 
 int maxPage = 1;  // Max number of pages, 2 for the BME that it's always in use, later is added more if needed
 int pageOrder[5]; // The array which decides the order of pages we display
 
 unsigned long time1; // Time measurement for button click
 
-Adafruit_BME680 bme680;      // Define BME sensor object
+BME680 bme680;               // Define BME sensor object
 CCS_811 ccs811Sensor;        // Define CCS811 sensor object
 LCD lcd(20, 4);              // Define LCD object
 PMS7003 pms(PMS_RX, PMS_TX); // Define PMSx003, RX, TX
@@ -109,7 +110,7 @@ void setup()
     }
 
     // Capture time for the values refresh
-    time1 = millis();
+    lastRefresh = time1 = millis();
 
     // Delay to see splash screen
     delay(2000);
@@ -170,8 +171,11 @@ void loop()
         if ((unsigned long)(millis() - lastButtonPress) > 50)
         {
             // If button is pressed, refresh measurements
-            gui.setPage(pageOrder[page]);
-            time1 = millis();
+            if ((unsigned long)(millis() - lastRefresh) > 2000)
+            {
+                gui.setPage(pageOrder[page]);
+                lastRefresh = time1 = millis();
+            }
         }
 
         // Remember last button press event
