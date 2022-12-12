@@ -2,14 +2,14 @@
  ***************************************************
  *
  * @file        settings.h
- * 
+ *
  * @brief       Settings for the device
- * 
+ *
  * @copyright   GNU General Public License v3.0
- * 
+ *
  * @author      Karlo Leksic for Soldered.com
- * 
-****************************************************/
+ *
+ ****************************************************/
 
 // Sensors settings - Put 0 if you won't to use these sensors
 #define USE_PMS_SENSOR 1 // This variable decides the usage of the PMS7003 sensor
@@ -23,13 +23,13 @@
 #define BATTERY_R1 10000 // The resistor 1 on the voltage divider for measure battery voltage in Ohms
 #define BATTERY_R2 3300  // The resistor 2 on the viltage divider for measure battery voltage in Ohms
 
-// Battery measuring enable - if you won't measure the battery, put 0 
+// Battery measuring enable - if you won't measure the battery, put 0
 #define MEASURING_BATTERY_VOLTAGE 1
 
 // The pin on the Dasduino which is connected voltage divider for measuring battery voltage
 #define BATTERY_MEASURE_PIN A0
 
-#define REFRESH_DATA_TIME 10000 // Refresh sensors readings every 5000 ms
+#define REFRESH_DATA_TIME 10000 // Refresh sensors readings every 10000 ms - 10 sec
 
 // Rotary Encoder Inputs
 #define ROTARY_CLOCK_PIN  7  // Clock pin connected to D7

@@ -12,7 +12,7 @@
     gui.cpp contains all functions from the GUI class which is used to display measurements on the screen and initialize
     sensors.
 
-    5 December 2022 by Soldered
+    12 December 2022 by Soldered
 */
 
 #include "src/gui.h"      // Include GUI class definition and its methods
@@ -115,6 +115,9 @@ void setup()
     // Delay to see splash screen
     delay(2000);
 
+    // Read the sensors to have data to display
+    gui.readSensors();
+
     // Set default home page
     gui.setPage(1);
 
@@ -173,8 +176,13 @@ void loop()
             // If button is pressed, refresh measurements
             if ((unsigned long)(millis() - lastRefresh) > 2000)
             {
+                gui.readSensors();
                 gui.setPage(pageOrder[page]);
                 lastRefresh = time1 = millis();
+            }
+            else
+            {
+                gui.setPage(pageOrder[page]);
             }
         }
 
@@ -188,10 +196,7 @@ void loop()
     // If the page is changing, change content
     if (prevPage != page)
     {
-        // setPage(pageOrder[page]);
         gui.setPage(pageOrder[page]);
-        time1 = millis(); // The data is refreshed automatically when the new page is loaded so reset the timer in order
-                          // to have a refresh every 5 seconds
         prevPage = page;
     }
 
@@ -199,6 +204,7 @@ void loop()
     if ((unsigned long)(millis() - time1) > REFRESH_DATA_TIME)
     {
         // Set sensor readings depending on the page we are
+        gui.readSensors();
         gui.setPage(pageOrder[page]);
 
         // Reset timer after refreshing

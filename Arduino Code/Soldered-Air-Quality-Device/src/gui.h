@@ -24,16 +24,19 @@
 class GUI
 {
   public:
-    GUI(LCD *lcd, BME680  *bme680, CCS_811 *ccs811Sensor, PMS7003 *pms, int *page, int *maxPage);
+    GUI(LCD *lcd, BME680 *bme680, CCS_811 *ccs811Sensor, PMS7003 *pms, int *page, int *maxPage);
     void setPage(uint8_t page);
     void printBMEpage();
     void printCCSpage(void);
     void printPMSpage(uint8_t page);
     void insertNumbers(uint8_t page);
-    void printBMEvalues(float temp, float hum, float pressure);
-    void printCCSvalues(int ccsCO2, int ccsTVOC);
-    void printPMSvalues(uint8_t pg, int pm1, int pm25, int pm10, int n0p3, int n0p5, int n1p0, int n2p5, int n5p0,
-                        int n10p0);
+    void readBME();
+    void readCCS();
+    void readPMS();
+    void readSensors();
+    void printBMEvalues();
+    void printCCSvalues();
+    void printPMSvalues(uint8_t pg);
     void insertPageNum(void);
     void pageMark(void);
     void printBatteryPercentage();
@@ -46,12 +49,13 @@ class GUI
   protected:
   private:
     LCD *lcd;
-    BME680  *bme680;
+    BME680 *bme680;
     CCS_811 *ccs811Sensor;
     PMS7003 *pms;
     int *page, *maxPage;
     int CO2, TVOC;
     float bmeTemp, bmeHumidity, bmePressure, bmeGas;
+    int pmsPM01, pmsPM25, pmsPM10, pmsn0p3, pmsn0p5, pmsn1p0, pmsn2p2, pmsn5p0, pmsn10p0;
 };
 
 #endif

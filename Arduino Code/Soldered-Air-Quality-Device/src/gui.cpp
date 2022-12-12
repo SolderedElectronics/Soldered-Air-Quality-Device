@@ -215,80 +215,89 @@ void GUI::printPMSpage(byte page)
  */
 void GUI::insertNumbers(byte page)
 {
-    // Variables for bme values
-    float bmeTemp, bmeHumidity, bmePressure, bmeGas, tempOffset = 0;
-
-    if (page > 2) // Those are PMS pages so we need to read the PMS values if the page number is greater than 2
-    {
-        pms->read(); // PMS reads values and stores them in their variables
-    }
-
     // Select the page depending on the page argument
     switch (page)
     {
     case 1:
-        bme680->readSensorData(bmeTemp, bmeHumidity, bmePressure, bmeGas); // readBME
-        printBMEvalues(bmeTemp - TEMP_OFFEST, bmeHumidity, bmePressure);   // Printing it to the LCD on the right place
+        printBMEvalues();
         break;
 
     case 2:
-        if (ccs811Sensor->dataAvailable()) //  Check to see if data is ready
-        {
-            ccs811Sensor->readAlgorithmResults(); // Read Alorithm only reads data into internal registers of sensor,
-                                                  // doesnt return anything
-            CO2 = ccs811Sensor->getCO2();
-            TVOC = ccs811Sensor->getTVOC();
-
-            printCCSvalues(CO2, TVOC); // Printing it to the LCD on the right place
-        }
-        else
-        {
-            printCCSvalues(-1, -1);
-        }
+        printCCSvalues();
         break;
 
     case 3:
-        if (pms)
-        {
-            // Printing it to the LCD on the right place
-            printPMSvalues(1, pms->pm01, pms->pm25, pms->pm10, pms->n0p3, pms->n0p5, pms->n1p0, pms->n2p5, pms->n5p0,
-                           pms->n10p0);
-        }
-        else
-        {
-            // Set -1 to indicate that there is an error
-            printPMSvalues(1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
-        }
+        printPMSvalues(1);
         break;
 
     case 4:
-        if (pms)
-        {
-            // Printing it to the LCD on the right place
-            printPMSvalues(2, pms->pm01, pms->pm25, pms->pm10, pms->n0p3, pms->n0p5, pms->n1p0, pms->n2p5, pms->n5p0,
-                           pms->n10p0);
-        }
-        else
-        {
-            // Set -1 to indicate that there is an error
-            printPMSvalues(2, -1, -1, -1, -1, -1, -1, -1, -1, -1);
-        }
+        printPMSvalues(2);
         break;
 
     case 5:
-        if (pms)
-        {
-            // Printing it to the LCD on the right place
-            printPMSvalues(3, pms->pm01, pms->pm25, pms->pm10, pms->n0p3, pms->n0p5, pms->n1p0, pms->n2p5, pms->n5p0,
-                           pms->n10p0);
-        }
-        else
-        {
-            // Set -1 to indicate that there is an error
-            printPMSvalues(3, -1, -1, -1, -1, -1, -1, -1, -1, -1);
-        }
+        printPMSvalues(3);
         break;
     }
+}
+
+/**
+ * @brief           Read BME sensor.
+ *
+ * @return          None.
+ */
+void GUI::readBME()
+{
+    bme680->readSensorData(bmeTemp, bmeHumidity, bmePressure, bmeGas); // readBME
+}
+
+/**
+ * @brief           Read PMS sensor.
+ *
+ * @return          None.
+ */
+void GUI::readPMS()
+{
+    pms->read(); // PMS reads values and stores them in their variables
+    if (pms)
+    {
+        pmsPM01 = pms->pm01;
+        pmsPM25 = pms->pm25;
+        pmsPM10 = pms->pm10;
+        pmsn0p3 = pms->n0p3;
+        pmsn0p5 = pms->n0p5;
+        pmsn1p0 = pms->n1p0;
+        pmsn2p2 = pms->n2p5;
+        pmsn5p0 = pms->n5p0;
+        pmsn10p0 = pms->n10p0;
+    }
+}
+
+/**
+ * @brief           Read CCS sensor.
+ *
+ * @return          None.
+ */
+void GUI::readCCS()
+{
+    if (ccs811Sensor->dataAvailable()) //  Check to see if data is ready
+    {
+        ccs811Sensor->readAlgorithmResults(); // Read Alorithm only reads data into internal registers of sensor,
+                                              // doesnt return anything
+        CO2 = ccs811Sensor->getCO2();
+        TVOC = ccs811Sensor->getTVOC();
+    }
+}
+
+/**
+ * @brief           Read all sensors.
+ *
+ * @return          None.
+ */
+void GUI::readSensors()
+{
+    readBME();
+    readCCS();
+    readPMS();
 }
 
 /**
@@ -302,19 +311,19 @@ void GUI::insertNumbers(byte page)
  *
  * @return          None.
  */
-void GUI::printBMEvalues(float temp, float hum, float pressure)
+void GUI::printBMEvalues()
 {
     if (!BMEavailable())
     {
         // If the sensor read proprely, print read values and round them to 1 decimal
         lcd->setCursor(13, 0);
-        lcd->print(temp, 1);
+        lcd->print(bmeTemp, 1);
 
         lcd->setCursor(13, 1);
-        lcd->print(hum, 1);
+        lcd->print(bmeHumidity, 1);
 
         lcd->setCursor(9, 2);
-        lcd->print(pressure, 1);
+        lcd->print(bmePressure, 1);
     }
     else
     {
@@ -339,26 +348,13 @@ void GUI::printBMEvalues(float temp, float hum, float pressure)
  *
  * @return          None.
  */
-void GUI::printCCSvalues(int ccsCO2, int ccsTVOC)
+void GUI::printCCSvalues()
 {
-    if (ccsCO2 == -1)
-    {
-        // If there is any error, print old values
-        lcd->setCursor(10, 0);
-        lcd->print(CO2);
+    lcd->setCursor(10, 0);
+    lcd->print(CO2);
 
-        lcd->setCursor(10, 1);
-        lcd->print(TVOC);
-    }
-    else
-    {
-        // If not, print the CCS values
-        lcd->setCursor(10, 0);
-        lcd->print(ccsCO2);
-
-        lcd->setCursor(10, 1);
-        lcd->print(ccsTVOC);
-    }
+    lcd->setCursor(10, 1);
+    lcd->print(TVOC);
 }
 
 /**
@@ -386,51 +382,42 @@ void GUI::printCCSvalues(int ccsCO2, int ccsTVOC)
  *
  * @return          None.
  */
-void GUI::printPMSvalues(byte page, int pm1, int pm25, int pm10, int n0p3, int n0p5, int n1p0, int n2p5, int n5p0,
-                         int n10p0)
+void GUI::printPMSvalues(byte page)
 {
-    if (pm1 == -1)
-    {
-        // Above we send -1 to this function if there was any error so there print it
-        lcd->clear();
-        lcd->setCursor(0, 0);
-        lcd->print("Error reading sensor");
-    }
-
     // Select the page depending on the page argument and print the values
     switch (page)
     {
     case 1:
         lcd->setCursor(10, 0);
-        lcd->print(pm1);
+        lcd->print(pmsPM01);
 
         lcd->setCursor(10, 1);
-        lcd->print(pm25);
+        lcd->print(pmsPM25);
 
         lcd->setCursor(10, 2);
-        lcd->print(pm10);
+        lcd->print(pmsPM10);
         break;
 
     case 2:
         lcd->setCursor(7, 0);
-        lcd->print(n0p3);
+        lcd->print(pmsn0p3);
 
         lcd->setCursor(7, 1);
-        lcd->print(n0p5);
+        lcd->print(pmsn0p5);
 
         lcd->setCursor(7, 2);
-        lcd->print(n1p0);
+        lcd->print(pmsn1p0);
         break;
 
     case 3:
         lcd->setCursor(8, 0);
-        lcd->print(n2p5);
+        lcd->print(pmsn2p2);
 
         lcd->setCursor(8, 1);
-        lcd->print(n5p0);
+        lcd->print(pmsn5p0);
 
         lcd->setCursor(8, 2);
-        lcd->print(n10p0);
+        lcd->print(pmsn10p0);
         break;
     }
 }
