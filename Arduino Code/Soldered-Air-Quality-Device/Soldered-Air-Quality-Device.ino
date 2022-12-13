@@ -51,8 +51,8 @@ void setup()
     }
 
     // Turn the onboard LED off because we don't use it
-    //pinMode(LEDWS_BUILTIN, OUTPUT);
-    //digitalWrite(LEDWS_BUILTIN, LOW);
+    pinMode(LEDWS_BUILTIN, OUTPUT);
+    digitalWrite(LEDWS_BUILTIN, LOW);
 
     // Begin I2C comunication
     Wire.begin();
