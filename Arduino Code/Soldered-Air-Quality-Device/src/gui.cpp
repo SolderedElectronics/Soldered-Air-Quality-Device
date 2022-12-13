@@ -90,7 +90,8 @@ void GUI::printBMEpage()
     // Clear the display before the page is printing
     lcd->clear();
 
-    // Set the cursor position to the right place on the screen and print the labels for the BME page on the LCD
+    // Set the cursor position to the right place on the screen and print the labels and measurement units for the BME
+    // page on the LCD
     lcd->setCursor(0, 0);
     lcd->print("Temperature:");
     lcd->setCursor(19, 0);
@@ -152,6 +153,7 @@ void GUI::printPMSpage(byte page)
     switch (page)
     {
     case 1:
+        // Set cursor and print labels and measurement units for PM1.0, PM2.5, and PM10 on the right place on the screen
         lcd->setCursor(0, 0);
         lcd->print("PM1.0: ");
         lcd->setCursor(15, 0);
@@ -169,6 +171,7 @@ void GUI::printPMSpage(byte page)
         break;
 
     case 2:
+        // Set cursor and print labels and measurement units for N0.3, N0.5, and N1.0 on the right place on the screen
         lcd->setCursor(0, 0);
         lcd->print("N0.3: ");
         lcd->setCursor(13, 0);
@@ -186,6 +189,7 @@ void GUI::printPMSpage(byte page)
         break;
 
     case 3:
+        // Set cursor and print labels and measurement units for N2.5, N5.0, and N10 on the right place on the screen
         lcd->setCursor(0, 0);
         lcd->print("N2.5: ");
         lcd->setCursor(13, 0);
@@ -241,73 +245,81 @@ void GUI::insertNumbers(byte page)
 }
 
 /**
- * @brief           Read BME sensor.
+ * @brief           Read BME sensor and store measurements in class variables.
  *
  * @return          None.
  */
 void GUI::readBME()
 {
-    bme680->readSensorData(bmeTemp, bmeHumidity, bmePressure, bmeGas); // readBME
+    bme680->readSensorData(bmeTemp, bmeHumidity, bmePressure, bmeGas);
 }
 
 /**
- * @brief           Read PMS sensor.
+ * @brief           Read PMS sensor and store measurements in class variables.
  *
  * @return          None.
  */
 void GUI::readPMS()
 {
-    pms->read(); // PMS reads values and stores them in their variables
-    if (pms)
+    if (USE_PMS_SENSOR)
     {
-        pmsPM01 = pms->pm01;
-        pmsPM25 = pms->pm25;
-        pmsPM10 = pms->pm10;
-        pmsn0p3 = pms->n0p3;
-        pmsn0p5 = pms->n0p5;
-        pmsn1p0 = pms->n1p0;
-        pmsn2p2 = pms->n2p5;
-        pmsn5p0 = pms->n5p0;
-        pmsn10p0 = pms->n10p0;
+        pms->read();
+        if (pms)
+        {
+            pmsPM01 = pms->pm01;
+            pmsPM25 = pms->pm25;
+            pmsPM10 = pms->pm10;
+            pmsn0p3 = pms->n0p3;
+            pmsn0p5 = pms->n0p5;
+            pmsn1p0 = pms->n1p0;
+            pmsn2p2 = pms->n2p5;
+            pmsn5p0 = pms->n5p0;
+            pmsn10p0 = pms->n10p0;
+        }
     }
 }
 
 /**
- * @brief           Read CCS sensor.
+ * @brief           Read CCS sensor and store measurements in class variables.
  *
  * @return          None.
  */
 void GUI::readCCS()
 {
-    if (ccs811Sensor->dataAvailable()) //  Check to see if data is ready
+    if (USE_CCS_SENSOR)
     {
-        ccs811Sensor->readAlgorithmResults(); // Read Alorithm only reads data into internal registers of sensor,
-                                              // doesnt return anything
-        CO2 = ccs811Sensor->getCO2();
-        TVOC = ccs811Sensor->getTVOC();
+        if (ccs811Sensor->dataAvailable()) //  Check to see if data is ready
+        {
+            ccs811Sensor->readAlgorithmResults(); // Read Alorithm only reads data into internal registers of sensor,
+                                                  // doesnt return anything
+            CO2 = ccs811Sensor->getCO2();
+            TVOC = ccs811Sensor->getTVOC();
+        }
     }
 }
 
 /**
- * @brief           Read all sensors.
+ * @brief           Read all sensors we use.
  *
  * @return          None.
  */
 void GUI::readSensors()
 {
     readBME();
-    readCCS();
-    readPMS();
+
+    if (USE_CCS_SENSOR)
+    {
+        readCCS();
+    }
+
+    if (USE_PMS_SENSOR)
+    {
+        readPMS();
+    }
 }
 
 /**
  * @brief           Print values that BME reads in the right place on the page.
- *
- * @param temp      The temperature we want to display.
- *
- * @param hum       The humidity we want to display.
- *
- * @param pressure  The pressure we want to display.
  *
  * @return          None.
  */
@@ -317,7 +329,7 @@ void GUI::printBMEvalues()
     {
         // If the sensor read proprely, print read values and round them to 1 decimal
         lcd->setCursor(13, 0);
-        lcd->print(bmeTemp, 1);
+        lcd->print(bmeTemp + TEMP_OFFEST, 1);
 
         lcd->setCursor(13, 1);
         lcd->print(bmeHumidity, 1);
@@ -342,10 +354,6 @@ void GUI::printBMEvalues()
 /**
  * @brief           Print values that CCS read in the right place on the page.
  *
- * @param ccsCO2    The CO2 concentration value to display.
- *
- * @param ccsTVOC   The TVOC value to display.
- *
  * @return          None.
  */
 void GUI::printCCSvalues()
@@ -362,29 +370,11 @@ void GUI::printCCSvalues()
  *
  * @param page      Page of the PMS sensor on which we want to display read values. There are 3 pages, from 1 to 3.
  *
- * @param pm1       The concentration of the pm1 particules to display.
- *
- * @param pm25       The concentration of the pm25 particules to display.
- *
- * @param pm10       The concentration of the pm10 particules to display.
- *
- * @param n0p3       The concentration of the n0p3 particules to display.
- *
- * @param n0p5       The concentration of the n0p5 particules to display.
- *
- * @param n1p0       The concentration of the n1p0 particules to display.
- *
- * @param n2p5       The concentration of the n2p5 particules to display.
- *
- * @param n5p0       The concentration of the n5p0 particules to display.
- *
- * @param n10p0       The concentration of the n10p0 particules to display.
- *
  * @return          None.
  */
 void GUI::printPMSvalues(byte page)
 {
-    // Select the page depending on the page argument and print the values
+    // Select the page depending on the page argument and print the measurements on the right place on the screen
     switch (page)
     {
     case 1:

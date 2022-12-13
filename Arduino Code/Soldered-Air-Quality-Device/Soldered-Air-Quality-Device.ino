@@ -12,6 +12,12 @@
     gui.cpp contains all functions from the GUI class which is used to display measurements on the screen and initialize
     sensors.
 
+    Make sure to install next libraries:
+    Soldered-LCD: https://github.com/SolderedElectronics/Soldered-LCD-library
+    Soldered-BME280: https://github.com/SolderedElectronics/Soldered-BME280-BME680-Gas-Sensor-Arduino-Library
+    Soldered-CCS811: https://github.com/SolderedElectronics/Soldered-CCS811-Air-Quality-Sensor-Arduino-Library
+    Soldered-PMS7003: https://github.com/SolderedElectronics/Soldered-PMS7003-Particle-Sensor-Arduino-Library
+
     12 December 2022 by Soldered
 */
 
@@ -45,10 +51,10 @@ void setup()
     }
 
     // Turn the onboard LED off because we don't use it
-    pinMode(LEDWS_BUILTIN, OUTPUT);
-    digitalWrite(LEDWS_BUILTIN, LOW);
+    //pinMode(LEDWS_BUILTIN, OUTPUT);
+    //digitalWrite(LEDWS_BUILTIN, LOW);
 
-    // Begin I2C comunication and set timeout
+    // Begin I2C comunication
     Wire.begin();
 
     // Initialize LCD and turn the backlight on
@@ -173,15 +179,17 @@ void loop()
         // button has been pressed, released and pressed again
         if ((unsigned long)(millis() - lastButtonPress) > 50)
         {
-            // If button is pressed, refresh measurements
+            // If button is pressed, refresh screen
             if ((unsigned long)(millis() - lastRefresh) > 2000)
             {
+                // Take measurements only once if the button is pressed more than one time in 2 seconds
                 gui.readSensors();
                 gui.setPage(pageOrder[page]);
                 lastRefresh = time1 = millis();
             }
             else
             {
+                // Only refresh the screen if the button is pressed more than one time in 2 sec
                 gui.setPage(pageOrder[page]);
             }
         }

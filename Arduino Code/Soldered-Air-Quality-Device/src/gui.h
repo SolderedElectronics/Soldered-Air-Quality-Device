@@ -48,13 +48,18 @@ class GUI
 
   protected:
   private:
-    LCD *lcd;
-    BME680 *bme680;
-    CCS_811 *ccs811Sensor;
-    PMS7003 *pms;
+    LCD *lcd;              // Pointer to LCD screen objest
+    BME680 *bme680;        // Pointer to BME680 sensor
+    CCS_811 *ccs811Sensor; // Pointer to CCS811 sensor
+    PMS7003 *pms;          // Pointer to PMS7003
+
+    // Variables to store current page and number of max pages
     int *page, *maxPage;
+    // Variables for CCS sensor measurements
     int CO2, TVOC;
+    // Variables for BME sensor measurements
     float bmeTemp, bmeHumidity, bmePressure, bmeGas;
+    // Variables for PMS sensor measurements
     int pmsPM01, pmsPM25, pmsPM10, pmsn0p3, pmsn0p5, pmsn1p0, pmsn2p2, pmsn5p0, pmsn10p0;
 };
 

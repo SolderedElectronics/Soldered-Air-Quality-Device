@@ -17,9 +17,6 @@
 
 #define TEMP_OFFEST 0 // Set the temperature offset if you want to calibrate the sensor
 
-#define BATTERY_FULL 970 // Analog read when the battery is fully charged
-#define BATTERY_LOW  700 // Analog read when the battery is low
-
 #define BATTERY_R1 10000 // The resistor 1 on the voltage divider for measure battery voltage in Ohms
 #define BATTERY_R2 3300  // The resistor 2 on the viltage divider for measure battery voltage in Ohms
 
