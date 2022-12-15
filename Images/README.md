@@ -1,1 +1,1 @@
-Add all image files here and edit this readme file.
+Here are pictures of the finished product and picture of the product inside.
