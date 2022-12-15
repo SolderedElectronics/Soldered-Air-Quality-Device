@@ -40,7 +40,7 @@ GUI::GUI(LCD *_lcd, BME680 *_bme680, CCS_811 *_ccs811Sensor, PMS7003 *_pms, int 
 }
 
 /**
- * @brief           Set the wanted page on the LCD, automatically read sensor data and print on it.
+ * @brief           Sets the wanted page on the LCD and prints the sensor data on it.
  *
  * @param page      The number of page we want to display.
  *

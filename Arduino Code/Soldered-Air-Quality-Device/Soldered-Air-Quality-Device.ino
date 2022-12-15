@@ -30,7 +30,7 @@ int lastStateClock;                // Store the PREVIOUS status of the rotary en
 unsigned long lastButtonPress = 0; // Use this to store if the ROTARY_BUTTON_PIN button was pressed or not
 unsigned long lastRefresh = 0;     // Use this to store last screen refresh
 
-int maxPage = 1;  // Max number of pages, 2 for the BME that it's always in use, later is added more if needed
+int maxPage = 1;  // Max number of pages, 1 for the BME that it's always in use, later is added more if needed
 int pageOrder[5]; // The array which decides the order of pages we display
 
 unsigned long time1; // Time measurement for button click
