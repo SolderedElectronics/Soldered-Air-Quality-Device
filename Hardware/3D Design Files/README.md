@@ -14,5 +14,5 @@ We used PLA Soldered purple filament.
 * 9x Screw M3 5mm HEX - [link](https://soldered.com/product/vijak-m3-5mm-hex-2/)
 * 4x Screw M3 12mm HEX - [link](https://soldered.com/product/vijak-m3-12mm-hex-2/)
 * Prototyping wire AWG25 - [link](https://soldered.com/product/ica-za-prototipiranje-10m-crvena-awg25-2/)
-* easyC cable 10cm - [link](https://soldered.com/product/easyc-kablic-10cm-2/)
+* 3x easyC cable 10cm - [link](https://soldered.com/product/easyc-kablic-10cm-2/)
 * Heatshrink - [link](https://soldered.com/product/set-termobuzira-2/)

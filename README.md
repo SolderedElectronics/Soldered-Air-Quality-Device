@@ -9,6 +9,30 @@ Sensors and other components are connected according to the wiring diagram shown
 
 ![schematic](https://user-images.githubusercontent.com/80395378/207919256-e3b7d9b5-aca6-479f-8404-6642e3403a64.jpg)
 
+## Used electronic components
+
+* Dasduino CORE - [link](https://soldered.com/product/dasduino-core-2/)
+* Enviromental & air quality sensor BME680 breakout - [link](https://soldered.com/product/senzor-kvalitete-zraka-i-okoline-bme680-2/)
+* Air quality sensor CCS811 breakout - [link](https://soldered.com/product/senzor-kvalitete-zraka-ccs811-2/)
+* PMS7003 senzor PM10, PM2.5 - [link](https://soldered.com/hr/proizvod/pms7003-senzor-pm10-pm2-5/) + PMS7003 sensor adapter - [link](https://soldered.com/product/adapter-za-pms7003-senzor-2/)
+* Logic level converter board - [link](https://soldered.com/product/pretvarac-logickih-razina-2/)
+* LCD display16x4 white/blue - [link](https://soldered.com/product/lcd-ekran-16x4-bijelo-plavi-2/) + I2C LCD driver board - [link](https://soldered.com/hr/proizvod/i2c-lcd-driver-board/)
+* Rotary encoder 20mm with pushbutton - [link](https://soldered.com/product/rotary-encoder-20mm-s-pushbuttonom-2/)
+* Li-ion battery 1800mAh 3.7V - [link](https://soldered.com/product/li-ion-baterija-1800mah-3-7v-2/)
+* SPST panel switch elongated - [link](https://soldered.com/product/spst-panel-prekidac-duguljasti-2/)
+* Resistor 10K (it's situated in [Resistor kit 400](https://soldered.com/product/set-otpornika-400-2/))
+* Resistor 3.3K (it's situated in [Resistor kit 400](https://soldered.com/product/set-otpornika-400-2/))
+* Ceramic capacitor 100nF 50V - [link](https://soldered.com/product/keramicki-kondenzator-100nf-50v-2/)
+
+## Consumable material for assembling:
+* PLA Soldered purple filament
+* M3 Threaded inserts
+* 9x Screw M3 5mm HEX - [link](https://soldered.com/product/vijak-m3-5mm-hex-2/)
+* 4x Screw M3 12mm HEX - [link](https://soldered.com/product/vijak-m3-12mm-hex-2/)
+* Prototyping wire AWG25 - [link](https://soldered.com/product/ica-za-prototipiranje-10m-crvena-awg25-2/)
+* 3x easyC cable 10cm - [link](https://soldered.com/product/easyc-kablic-10cm-2/)
+* Heatshrink - [link](https://soldered.com/product/set-termobuzira-2/)
+
 # 3D case
 In order for all the sensors and electronics to be in one place and at the same time look nice, a case was designed that was printed on a 3D printer. In order for the air to flow through the case for the sensors to measure correctly, there are openings on the back and on the top and bottom.
 
