@@ -7,7 +7,7 @@ In order to have an insight into the air quality in the places where we live, we
 # Wiring diagram
 Sensors and other components are connected according to the wiring diagram shown below.
 
-(add wiring diagram)
+![schematic](https://user-images.githubusercontent.com/80395378/207919256-e3b7d9b5-aca6-479f-8404-6642e3403a64.jpg)
 
 # 3D case
 In order for all the sensors and electronics to be in one place and at the same time look nice, a case was designed that was printed on a 3D printer. In order for the air to flow through the case for the sensors to measure correctly, there are openings on the back and on the top and bottom.
