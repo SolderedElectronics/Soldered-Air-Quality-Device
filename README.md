@@ -20,8 +20,8 @@ Sensors and other components are connected according to the wiring diagram shown
 * Rotary encoder 20mm with pushbutton - [link](https://soldered.com/product/rotary-encoder-20mm-s-pushbuttonom-2/)
 * Li-ion battery 1800mAh 3.7V - [link](https://soldered.com/product/li-ion-baterija-1800mah-3-7v-2/)
 * SPST panel switch elongated - [link](https://soldered.com/product/spst-panel-prekidac-duguljasti-2/)
-* Resistor 10K (it's situated in [Resistor kit 400](https://soldered.com/product/set-otpornika-400-2/))
-* Resistor 3.3K (it's situated in [Resistor kit 400](https://soldered.com/product/set-otpornika-400-2/))
+* Resistor R1 = 10K (it's situated in [Resistor kit 400](https://soldered.com/product/set-otpornika-400-2/))
+* Resistor R2 = 3.3K (it's situated in [Resistor kit 400](https://soldered.com/product/set-otpornika-400-2/))
 * Ceramic capacitor 100nF 50V - [link](https://soldered.com/product/keramicki-kondenzator-100nf-50v-2/)
 
 ## Consumable material for assembling:
